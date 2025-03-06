@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Choklu!</title>
+  <!-- Import the Lobster font for the clickable text -->
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+  <!-- Import the Pacifico font for the surprise message -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: linear-gradient(to right, #ffafbd, #ffc3a0);
+      color: white;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+      animation: fadeIn 2s ease-in-out;
+    }
+    h1 {
+      font-size: 50px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .dynamic-text {
+      color: #ffe600;
+      font-size: 60px;
+      transition: opacity 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+    .love-message {
+      font-size: 22px;
+      font-weight: 500;
+      margin-top: 30px;
+      animation: bounce 2s infinite;
+    }
+    /* Styling for the clickable surprise text */
+    #surprise-link {
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 20px;
+      text-align: center;
+      font-family: 'Lobster', cursive;
+      font-size: 26px;
+    }
+    /* New styling for the surprise message text */
+    .surprise-text {
+      font-family: 'Pacifico', cursive;
+      font-size: 36px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Happy Birthday, <span class="dynamic-text">Choklu</span>!</h1>
+  <p class="love-message">
+    every moment with you is a blessing ❤️
+  </p>
+
+  <!-- Clickable element -->
+  <p id="surprise-link">Click here for a surprise</p>
+
+  <!-- Hidden surprise section (cake GIF and message) -->
+  <div id="surprise" style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; margin-top: 50px;">
+    <img src="https://media.giphy.com/media/l0Iy1Q9XnpoVP4B8c/giphy.gif?cid=ecf05e47qvdlusok5hx4cklle33bgqncu4got8qcirlp0bzm&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Birthday Cake" style="max-width: 80%; height: auto;">
+    <p class="surprise-text">you're thir-<span style="color: black;">tea☕️</span> one!</p>
+  </div>
+  
+  <script>
+    // Dynamic text functionality
+    const words = ["My Husband", "Farhan", "Chonky Monkey", "Warm Apple Pie"];
+    let index = 0;
+    function changeText() {
+      document.querySelector(".dynamic-text").style.opacity = 0;
+      setTimeout(() => {
+        document.querySelector(".dynamic-text").textContent = words[index];
+        document.querySelector(".dynamic-text").style.opacity = 1;
+        index = (index + 1) % words.length;
+      }, 500);
+    }
+    setInterval(changeText, 2000);
+    
+    // Click functionality for revealing the surprise
+    document.addEventListener("DOMContentLoaded", function() {
+      const surpriseLink = document.getElementById("surprise-link");
+      const surpriseDiv = document.getElementById("surprise");
+      if (surpriseLink && surpriseDiv) {
+        surpriseLink.addEventListener("click", function() {
+          surpriseDiv.style.display = "block";
+          setTimeout(function() {
+            surpriseDiv.style.opacity = 1;
+          }, 50);
+          // Hide the clickable text after clicking
+          surpriseLink.style.display = "none";
+        });
+      }
+    });
+  </script>
+</body>
+</html>
