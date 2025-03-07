@@ -77,6 +77,9 @@
     <p class="surprise-text">you're thir-<span style="color: black;">tea☕️</span> one!</p>
   </div>
   
+  <!-- Include the canvas-confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+  
   <script>
     // Dynamic text functionality
     const words = ["My Husband", "Farhan", "Chonky Monkey", "Warm Apple Pie"];
@@ -91,7 +94,7 @@
     }
     setInterval(changeText, 2000);
     
-    // Click functionality for revealing the surprise
+    // Click functionality for revealing the surprise and launching confetti
     document.addEventListener("DOMContentLoaded", function() {
       const surpriseLink = document.getElementById("surprise-link");
       const surpriseDiv = document.getElementById("surprise");
@@ -103,6 +106,13 @@
           }, 50);
           // Hide the clickable text after clicking
           surpriseLink.style.display = "none";
+          
+          // Launch confetti across the whole screen
+          confetti({
+            particleCount: 200,
+            spread: 100,
+            origin: { y: 0.5 }
+          });
         });
       }
     });
