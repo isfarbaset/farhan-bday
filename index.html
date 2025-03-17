@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Happy Birthday, Choklu!</title>
   <!-- Import the Lobster font for the clickable text -->
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet" />
   <!-- Import the Pacifico font for the surprise message -->
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: "Arial", sans-serif;
       text-align: center;
       background: linear-gradient(to right, #ffafbd, #ffc3a0);
       color: white;
@@ -18,9 +18,9 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-height: 100vh; /* Allows page to grow if needed */
+      min-height: 100vh;
       animation: fadeIn 2s ease-in-out;
-      overflow-x: hidden; /* Hide horizontal overflow, allow vertical scrolling */
+      overflow-x: hidden;
       position: relative;
     }
     h1 {
@@ -57,7 +57,7 @@
       text-decoration: underline;
       margin-top: 20px;
       text-align: center;
-      font-family: 'Lobster', cursive;
+      font-family: "Lobster", cursive;
       font-size: 26px;
       position: relative;
       z-index: 2;
@@ -66,7 +66,7 @@
     #close-surprise {
       cursor: pointer;
       text-decoration: underline;
-      font-family: 'Pacifico', cursive;
+      font-family: "Pacifico", cursive;
       font-size: 36px;
       margin-top: 20px;
       position: relative;
@@ -93,34 +93,34 @@
       opacity: 0.8;
     }
     @keyframes floatUp {
-      0% {
-        transform: translateY(0) rotate(0deg);
-      }
-      100% {
-        transform: translateY(-110vh) rotate(360deg);
-      }
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-110vh) rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <h1>Happy Birthday, <span class="dynamic-text">Choklu</span>!</h1>
-  <p class="love-message">
-    every moment with you is a blessing ❤️
-  </p>
+  <p class="love-message">every moment with you is a blessing ❤️</p>
 
   <!-- Initial clickable element to reveal the surprise -->
   <p id="surprise-link">Click here for a surprise</p>
 
   <!-- Hidden surprise section (cake GIF and message) -->
   <div id="surprise" style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; margin-top: 50px; position: relative; z-index: 2;">
-    <img src="https://media.giphy.com/media/l0Iy1Q9XnpoVP4B8c/giphy.gif?cid=ecf05e47qvdlusok5hx4cklle33bgqncu4got8qcirlp0bzm&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Birthday Cake" style="max-width: 80%; height: auto;">
+    <img src="https://media.giphy.com/media/l0Iy1Q9XnpoVP4B8c/giphy.gif?cid=ecf05e47qvdlusok5hx4cklle33bgqncu4got8qcirlp0bzm&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Birthday Cake" style="max-width: 80%; height: auto;" />
     <!-- This text now serves as the close button -->
     <p id="close-surprise">you're thir-<span style="color: black;">tea☕️</span> one!</p>
   </div>
-  
+
+  <!-- Hidden audio element with a remote sweet bell sound -->
+  <audio id="birthday-sound" preload="auto" style="display: none;">
+    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
   <!-- Include the canvas-confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-  
+
   <script>
     // Dynamic text functionality
     const words = ["My Husband", "Farhan", "Chonky Monkey", "Warm Apple Pie"];
@@ -135,47 +135,64 @@
       }, 500);
     }
     setInterval(changeText, 2000);
-    
+
     // Reveal surprise functionality
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const surpriseLink = document.getElementById("surprise-link");
       const surpriseDiv = document.getElementById("surprise");
+      const birthdaySound = document.getElementById("birthday-sound");
       if (surpriseLink && surpriseDiv) {
-        surpriseLink.addEventListener("click", function() {
+        surpriseLink.addEventListener("click", function () {
           surpriseDiv.style.display = "block";
-          setTimeout(function() {
+          setTimeout(function () {
             surpriseDiv.style.opacity = 1;
           }, 50);
           // Hide the clickable text after clicking
           surpriseLink.style.display = "none";
-          
+
           // Launch confetti across the whole screen
           confetti({
             particleCount: 200,
             spread: 100,
-            origin: { y: 0.5 }
+            origin: { y: 0.5 },
           });
-          
-          // Optional: Play a birthday sound (ensure the URL points to a valid audio file)
-          const birthdaySound = new Audio("https://www.myinstants.com/media/sounds/happy-birthday_1.mp3");
-          birthdaySound.play().catch(error => {
-            console.error("Audio playback failed:", error);
+
+          // Debug events for the audio element
+          birthdaySound.addEventListener("canplaythrough", () => {
+            console.log("Sound is ready to play!");
           });
+          birthdaySound.addEventListener("error", (e) => {
+            console.error("Error loading audio:", e);
+          });
+
+          // Set a moderate volume
+          birthdaySound.volume = 0.5;
           
+          birthdaySound
+            .play()
+            .then(() => {
+              console.log("Audio playback started successfully!");
+            })
+            .catch((error) => {
+              console.error("Audio playback failed:", error);
+            });
+
           // Trigger haptic feedback on mobile devices if supported
           if (navigator.vibrate) {
             navigator.vibrate(200);
+          } else {
+            console.log("Haptic feedback is not supported on this device.");
           }
         });
       }
-      
+
       // Close functionality using the surprise text as the button
       const closeBtn = document.getElementById("close-surprise");
       if (closeBtn) {
-        closeBtn.addEventListener("click", function() {
+        closeBtn.addEventListener("click", function () {
           const surpriseDiv = document.getElementById("surprise");
           surpriseDiv.style.opacity = 0;
-          setTimeout(function() {
+          setTimeout(function () {
             surpriseDiv.style.display = "none";
             // Optionally, show the initial clickable text again for re-triggering
             document.getElementById("surprise-link").style.display = "block";
@@ -183,22 +200,22 @@
         });
       }
     });
-    
+
     // Function to create a sparkle effect at given (x, y) coordinates
     function createSparkle(x, y) {
-      const sparkle = document.createElement('span');
-      sparkle.classList.add('sparkle');
-      sparkle.textContent = '✨';
-      sparkle.style.left = x + 'px';
-      sparkle.style.top = y + 'px';
+      const sparkle = document.createElement("span");
+      sparkle.classList.add("sparkle");
+      sparkle.textContent = "✨";
+      sparkle.style.left = x + "px";
+      sparkle.style.top = y + "px";
       document.body.appendChild(sparkle);
-      
+
       // Animate the sparkle: move upward and fade out
       setTimeout(() => {
-        sparkle.style.transform = 'translateY(-20px)';
-        sparkle.style.opacity = '0';
+        sparkle.style.transform = "translateY(-20px)";
+        sparkle.style.opacity = "0";
       }, 10);
-      
+
       // Remove the sparkle after the animation
       setTimeout(() => {
         sparkle.remove();
@@ -206,29 +223,29 @@
     }
 
     // Sparkle effect for desktop: trigger on mouse move
-    document.addEventListener('mousemove', function(e) {
+    document.addEventListener("mousemove", function (e) {
       createSparkle(e.pageX, e.pageY);
     });
-    
+
     // Sparkle effect for mobile: trigger on touch move
-    document.addEventListener('touchmove', function(e) {
+    document.addEventListener("touchmove", function (e) {
       for (let i = 0; i < e.touches.length; i++) {
         let touch = e.touches[i];
         createSparkle(touch.pageX, touch.pageY);
       }
     });
-    
+
     // Floating balloons effect
     function createBalloon() {
-      const balloon = document.createElement('span');
-      balloon.classList.add('balloon');
-      balloon.textContent = '🎈';
+      const balloon = document.createElement("span");
+      balloon.classList.add("balloon");
+      balloon.textContent = "🎈";
       // Random horizontal starting position
-      balloon.style.left = Math.random() * 100 + 'vw';
+      balloon.style.left = Math.random() * 100 + "vw";
       // Random animation duration between 8 to 12 seconds
-      balloon.style.animationDuration = (8 + Math.random() * 4) + 's';
+      balloon.style.animationDuration = 8 + Math.random() * 4 + "s";
       document.body.appendChild(balloon);
-      
+
       // Remove the balloon after its animation completes
       setTimeout(() => {
         balloon.remove();
