@@ -20,11 +20,15 @@
       justify-content: center;
       height: 100vh;
       animation: fadeIn 2s ease-in-out;
+      overflow: hidden; /* Prevent sparkles/balloons from creating scrollbars */
+      position: relative;
     }
     h1 {
       font-size: 50px;
       font-weight: bold;
       margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
     }
     .dynamic-text {
       color: #ffe600;
@@ -44,8 +48,10 @@
       font-weight: 500;
       margin-top: 30px;
       animation: bounce 2s infinite;
+      position: relative;
+      z-index: 2;
     }
-    /* Styling for the clickable surprise text */
+    /* Styling for the initial clickable surprise text */
     #surprise-link {
       cursor: pointer;
       text-decoration: underline;
@@ -53,12 +59,46 @@
       text-align: center;
       font-family: 'Lobster', cursive;
       font-size: 26px;
+      position: relative;
+      z-index: 2;
     }
-    /* New styling for the surprise message text */
-    .surprise-text {
+    /* Styling for the clickable close text in the surprise section */
+    #close-surprise {
+      cursor: pointer;
+      text-decoration: underline;
       font-family: 'Pacifico', cursive;
       font-size: 36px;
       margin-top: 20px;
+      position: relative;
+      z-index: 2;
+    }
+    /* Styling for the sparkle elements */
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 20px;
+      user-select: none;
+      z-index: 3;
+      opacity: 1;
+      transition: opacity 1s linear, transform 1s linear;
+    }
+    /* Styling for the floating balloons */
+    .balloon {
+      position: fixed;
+      bottom: -100px;
+      font-size: 40px;
+      z-index: 1;
+      animation: floatUp 10s linear forwards;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-110vh) rotate(360deg);
+      }
     }
   </style>
 </head>
@@ -68,13 +108,14 @@
     every moment with you is a blessing ❤️
   </p>
 
-  <!-- Clickable element -->
+  <!-- Initial clickable element to reveal the surprise -->
   <p id="surprise-link">Click here for a surprise</p>
 
   <!-- Hidden surprise section (cake GIF and message) -->
-  <div id="surprise" style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; margin-top: 50px;">
+  <div id="surprise" style="display: none; opacity: 0; transition: opacity 1s ease; text-align: center; margin-top: 50px; position: relative; z-index: 2;">
     <img src="https://media.giphy.com/media/l0Iy1Q9XnpoVP4B8c/giphy.gif?cid=ecf05e47qvdlusok5hx4cklle33bgqncu4got8qcirlp0bzm&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Birthday Cake" style="max-width: 80%; height: auto;">
-    <p class="surprise-text">you're thir-<span style="color: black;">tea☕️</span> one!</p>
+    <!-- This text now serves as the close button -->
+    <p id="close-surprise">you're thir-<span style="color: black;">tea☕️</span> one!</p>
   </div>
   
   <!-- Include the canvas-confetti library -->
@@ -85,16 +126,17 @@
     const words = ["My Husband", "Farhan", "Chonky Monkey", "Warm Apple Pie"];
     let index = 0;
     function changeText() {
-      document.querySelector(".dynamic-text").style.opacity = 0;
+      const dynamicText = document.querySelector(".dynamic-text");
+      dynamicText.style.opacity = 0;
       setTimeout(() => {
-        document.querySelector(".dynamic-text").textContent = words[index];
-        document.querySelector(".dynamic-text").style.opacity = 1;
+        dynamicText.textContent = words[index];
+        dynamicText.style.opacity = 1;
         index = (index + 1) % words.length;
       }, 500);
     }
     setInterval(changeText, 2000);
     
-    // Click functionality for revealing the surprise and launching confetti
+    // Reveal surprise functionality
     document.addEventListener("DOMContentLoaded", function() {
       const surpriseLink = document.getElementById("surprise-link");
       const surpriseDiv = document.getElementById("surprise");
@@ -113,9 +155,87 @@
             spread: 100,
             origin: { y: 0.5 }
           });
+          
+          // Optional: Play a birthday sound (ensure the URL points to a valid audio file)
+          const birthdaySound = new Audio("https://www.myinstants.com/media/sounds/happy-birthday_1.mp3");
+          birthdaySound.play().catch(error => {
+            console.error("Audio playback failed:", error);
+          });
+          
+          // Trigger haptic feedback on mobile devices if supported
+          if (navigator.vibrate) {
+            navigator.vibrate(200);
+          }
+        });
+      }
+      
+      // Close functionality using the surprise text as the button
+      const closeBtn = document.getElementById("close-surprise");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function() {
+          const surpriseDiv = document.getElementById("surprise");
+          surpriseDiv.style.opacity = 0;
+          setTimeout(function() {
+            surpriseDiv.style.display = "none";
+            // Optionally, show the initial clickable text again for re-triggering
+            document.getElementById("surprise-link").style.display = "block";
+          }, 1000);
         });
       }
     });
+    
+    // Function to create a sparkle effect at given (x, y) coordinates
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('span');
+      sparkle.classList.add('sparkle');
+      sparkle.textContent = '✨';
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      document.body.appendChild(sparkle);
+      
+      // Animate the sparkle: move upward and fade out
+      setTimeout(() => {
+        sparkle.style.transform = 'translateY(-20px)';
+        sparkle.style.opacity = '0';
+      }, 10);
+      
+      // Remove the sparkle after the animation
+      setTimeout(() => {
+        sparkle.remove();
+      }, 1010);
+    }
+
+    // Sparkle effect for desktop: trigger on mouse move
+    document.addEventListener('mousemove', function(e) {
+      createSparkle(e.pageX, e.pageY);
+    });
+    
+    // Sparkle effect for mobile: trigger on touch move
+    document.addEventListener('touchmove', function(e) {
+      for (let i = 0; i < e.touches.length; i++) {
+        let touch = e.touches[i];
+        createSparkle(touch.pageX, touch.pageY);
+      }
+    });
+    
+    // Floating balloons effect
+    function createBalloon() {
+      const balloon = document.createElement('span');
+      balloon.classList.add('balloon');
+      balloon.textContent = '🎈';
+      // Random horizontal starting position
+      balloon.style.left = Math.random() * 100 + 'vw';
+      // Random animation duration between 8 to 12 seconds
+      balloon.style.animationDuration = (8 + Math.random() * 4) + 's';
+      document.body.appendChild(balloon);
+      
+      // Remove the balloon after its animation completes
+      setTimeout(() => {
+        balloon.remove();
+      }, parseFloat(balloon.style.animationDuration) * 1000);
+    }
+    // Create a new balloon every 2 seconds
+    setInterval(createBalloon, 2000);
   </script>
 </body>
 </html>
