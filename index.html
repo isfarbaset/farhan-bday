@@ -18,9 +18,9 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh; /* Allows page to grow if needed */
       animation: fadeIn 2s ease-in-out;
-      overflow: hidden; /* Prevent sparkles/balloons from creating scrollbars */
+      overflow-x: hidden; /* Hide horizontal overflow, allow vertical scrolling */
       position: relative;
     }
     h1 {
